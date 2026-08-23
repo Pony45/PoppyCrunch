@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Order Confirmed!{% endblock %}
+
+{% block content %}
+<section class="confirmation-section">
+    <div class="container">
+        <div class="confirmation-card">
+            <div class="confirmation-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1>ORDER CONFIRMED! 🎉</h1>
+            <p class="confirmation-text">Thank you for ordering from Pop'y Crunch!</p>
+            
+            <div class="order-details">
+                <div class="detail-row">
+                    <span>Order Number</span>
+                    <span class="order-number">{{ order.order_id }}</span>
+                </div>
+                <div class="detail-row">
+                    <span>Customer Name</span>
+                    <span>{{ order.customer_name }}</span>
+                </div>
+                <div class="detail-row">
+                    <span>Delivery Method</span>
+                    <span>{{ order.delivery_method|title }}</span>
+                </div>
+            </div>
+            
+            <div class="order-items-confirmation">
+                <h3>Ordered Products</h3>
+                {% for item in order.items %}
+                <div class="order-item-confirmation">
+                    <span>{{ item.id|title }}</span>
+                    <span>× {{ item.quantity }}</span>
+                    <span>RM {{ "%.2f"|format(item.quantity * 12.50) }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="order-total-confirmation">
+                <div class="total-row">
+                    <span>Total Amount</span>
+                    <span class="total-amount">RM {{ "%.2f"|format(order.total) }}</span>
+                </div>
+            </div>
+            
+            <div class="confirmation-actions">
+                <a href="{{ url_for('shop') }}" class="btn-primary">Continue Shopping</a>
+                <a href="{{ url_for('index') }}" class="btn-secondary">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
