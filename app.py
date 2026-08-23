@@ -85,6 +85,11 @@ def update_cart():
 def checkout():
     if request.method == 'POST':
         cart_items = session.get('cart', [])
+        
+        # Pastikan cart_items adalah list
+        if not isinstance(cart_items, list):
+            cart_items = []
+            
         order = {
             'order_id': f'PC{datetime.now().strftime("%Y%m%d")}{uuid.uuid4().hex[:6].upper()}',
             'customer_name': request.form.get('full_name'),
@@ -133,6 +138,11 @@ def order_confirmation():
     order = session.get('order')
     if not order:
         return redirect(url_for('index'))
+    
+    # Pastikan order['items'] adalah list
+    if not isinstance(order.get('items'), list):
+        order['items'] = []
+    
     return render_template('order_confirmation.html', order=order, cart_count=get_cart_count())
 
 @app.route('/about')
@@ -148,7 +158,9 @@ def contact():
 
 def get_cart_count():
     cart = session.get('cart', [])
-    return sum(item['quantity'] for item in cart)
+    if not isinstance(cart, list):
+        return 0
+    return sum(item.get('quantity', 0) for item in cart)
 
 if __name__ == '__main__':
     os.makedirs('flask_session', exist_ok=True)
