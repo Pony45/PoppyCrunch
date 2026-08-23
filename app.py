@@ -84,26 +84,35 @@ def update_cart():
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
     if request.method == 'POST':
+        # Ambil cart dari session
         cart_items = session.get('cart', [])
         
         # Pastikan cart_items adalah list
         if not isinstance(cart_items, list):
             cart_items = []
-            
+        
+        # Create order
         order = {
             'order_id': f'PC{datetime.now().strftime("%Y%m%d")}{uuid.uuid4().hex[:6].upper()}',
-            'customer_name': request.form.get('full_name'),
-            'phone': request.form.get('phone'),
-            'email': request.form.get('email'),
-            'address': request.form.get('address'),
-            'delivery_method': request.form.get('delivery_method'),
-            'items': cart_items,
+            'customer_name': request.form.get('full_name', 'Customer'),
+            'phone': request.form.get('phone', ''),
+            'email': request.form.get('email', ''),
+            'address': request.form.get('address', ''),
+            'delivery_method': request.form.get('delivery_method', 'delivery'),
+            'items': cart_items,  # Ini mesti list
             'total': calculate_total(cart_items)
         }
+        
+        # Debug: Print untuk check
+        print("ORDER ITEMS:", order['items'])
+        print("ORDER ITEMS TYPE:", type(order['items']))
+        
         session['order'] = order
         session['cart'] = []
         session.modified = True
         return redirect(url_for('order_confirmation'))
+    
+    # ... rest of code
     
     cart_items = session.get('cart', [])
     if not cart_items:
