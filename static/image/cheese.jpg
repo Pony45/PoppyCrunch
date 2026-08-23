@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400">
+  <rect fill="#f5c518" width="400" height="400"/>
+  <circle cx="200" cy="200" r="100" fill="#ffd54f"/>
+  <text x="200" y="210" text-anchor="middle" font-size="24" fill="#795548">🧀 Cheese</text>
+  <text x="200" y="240" text-anchor="middle" font-size="16" fill="#795548">Pop'y Crunch</text>
+</svg>
