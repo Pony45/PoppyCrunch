@@ -95,15 +95,17 @@ def checkout():
         return redirect(url_for('cart'))
     
     enriched = []
-    for item in cart_items:
-        p = get_product(item['id'])
-        if p:
-            enriched.append({
-                'id': item['id'],
-                'quantity': item['quantity'],
-                'name': p['name'],
-                'price': p['price']
-            })
+for item in cart_items:
+    p = get_product(item['id'])
+    if p:
+        enriched.append({
+            'id': item['id'],
+            'quantity': item['quantity'],
+            'name': p['name'],
+            'price': p['price'],
+            'currency': p['currency'],
+            'subtotal': round(p['price'] * item['quantity'], 2)
+        })
     
     subtotal = calculate_subtotal(cart_items)
     delivery = calculate_delivery_fee(subtotal)
