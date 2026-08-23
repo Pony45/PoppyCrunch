@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Shop Pop'y Crunch{% endblock %}
+
+{% block content %}
+<section class="shop-section">
+    <div class="container">
+        <h1 class="page-title">Shop Pop'y Crunch</h1>
+        <div class="products-grid">
+            {% for product in products %}
+            <div class="product-card" id="{{ product.id }}">
+                <div class="product-image">
+                    <img src="{{ url_for('static', filename='images/' + product.image) }}" 
+                         alt="{{ product.name }}"
+                         onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22><rect fill=%22%23f5e6d3%22 width=%22300%22 height=%22300%22/><text x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2220%22 fill=%22%238b4513%22>{{ product.name }}</text></svg>'">
+                    <span class="product-badge">Popular</span>
+                </div>
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <p class="product-description">{{ product.description }}</p>
+                    <p class="product-price">{{ product.currency }} {{ "%.2f"|format(product.price) }}</p>
+                    <div class="product-actions">
+                        <div class="quantity-selector">
+                            <button class="qty-btn qty-minus" data-product="{{ product.id }}">-</button>
+                            <input type="number" class="qty-input" id="qty-{{ product.id }}" value="1" min="1" max="10">
+                            <button class="qty-btn qty-plus" data-product="{{ product.id }}">+</button>
+                        </div>
+                        <button class="btn-add-to-cart" data-product="{{ product.id }}">
+                            <i class="fas fa-cart-plus"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
