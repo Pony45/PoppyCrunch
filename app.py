@@ -26,17 +26,18 @@ def cart():
     
     enriched = []
     for item in cart_items:
-        p = get_product(item.get('id'))
-        if p:
-            enriched.append({
-                'id': item.get('id'),
-                'quantity': item.get('quantity', 1),
-                'name': p['name'], 
-                'price': p['price'], 
-                'image': p['image'],
-                'currency': p['currency'],
-                'subtotal': round(p['price'] * item.get('quantity', 1), 2)
-            })
+        if isinstance(item, dict):
+            p = get_product(item.get('id'))
+            if p:
+                enriched.append({
+                    'id': item.get('id'),
+                    'quantity': item.get('quantity', 1),
+                    'name': p['name'], 
+                    'price': p['price'], 
+                    'image': p['image'],
+                    'currency': p['currency'],
+                    'subtotal': round(p['price'] * item.get('quantity', 1), 2)
+                })
     
     subtotal = calculate_subtotal(cart_items)
     return render_template('cart.html', 
@@ -55,14 +56,16 @@ def add_to_cart():
     if not isinstance(cart, list):
         cart = []
     
+    found = False
     for item in cart:
-        if item.get('id') == product_id:
+        if isinstance(item, dict) and item.get('id') == product_id:
             item['quantity'] = item.get('quantity', 0) + quantity
-            session['cart'] = cart
-            session.modified = True
-            return jsonify({'success': True, 'cart_count': get_cart_count()})
+            found = True
+            break
     
-    cart.append({'id': product_id, 'quantity': quantity})
+    if not found:
+        cart.append({'id': product_id, 'quantity': quantity})
+    
     session['cart'] = cart
     session.modified = True
     return jsonify({'success': True, 'cart_count': get_cart_count()})
@@ -77,7 +80,7 @@ def update_cart():
         cart = []
     
     for i, item in enumerate(cart):
-        if item.get('id') == product_id:
+        if isinstance(item, dict) and item.get('id') == product_id:
             if action == 'increase':
                 item['quantity'] = item.get('quantity', 0) + 1
             elif action == 'decrease':
@@ -104,9 +107,14 @@ def checkout():
         if not isinstance(cart_items, list):
             cart_items = []
         
-        # Debug print
-        print("CART ITEMS:", cart_items)
-        print("CART ITEMS TYPE:", type(cart_items))
+        # Filter hanya yang valid
+        valid_items = []
+        for item in cart_items:
+            if isinstance(item, dict) and item.get('id'):
+                valid_items.append({
+                    'id': item.get('id'),
+                    'quantity': item.get('quantity', 1)
+                })
         
         order = {
             'order_id': f'PC{datetime.now().strftime("%Y%m%d")}{uuid.uuid4().hex[:6].upper()}',
@@ -115,8 +123,8 @@ def checkout():
             'email': request.form.get('email', ''),
             'address': request.form.get('address', ''),
             'delivery_method': request.form.get('delivery_method', 'delivery'),
-            'items': cart_items,
-            'total': calculate_total(cart_items)
+            'items': valid_items,
+            'total': calculate_total(valid_items)
         }
         
         session['order'] = order
@@ -133,16 +141,17 @@ def checkout():
     
     enriched = []
     for item in cart_items:
-        p = get_product(item.get('id'))
-        if p:
-            enriched.append({
-                'id': item.get('id'),
-                'quantity': item.get('quantity', 1),
-                'name': p['name'],
-                'price': p['price'],
-                'currency': p['currency'],
-                'subtotal': round(p['price'] * item.get('quantity', 1), 2)
-            })
+        if isinstance(item, dict):
+            p = get_product(item.get('id'))
+            if p:
+                enriched.append({
+                    'id': item.get('id'),
+                    'quantity': item.get('quantity', 1),
+                    'name': p['name'],
+                    'price': p['price'],
+                    'currency': p['currency'],
+                    'subtotal': round(p['price'] * item.get('quantity', 1), 2)
+                })
     
     subtotal = calculate_subtotal(cart_items)
     delivery = calculate_delivery_fee(subtotal)
@@ -163,12 +172,17 @@ def order_confirmation():
         return redirect(url_for('index'))
     
     # Pastikan items adalah list
-    if not isinstance(order.get('items'), list):
-        order['items'] = []
+    items = order.get('items', [])
+    if not isinstance(items, list):
+        items = []
     
-    # Debug print
-    print("ORDER:", order)
-    print("ORDER ITEMS:", order.get('items'))
+    # Pastikan setiap item adalah dict
+    valid_items = []
+    for item in items:
+        if isinstance(item, dict):
+            valid_items.append(item)
+    
+    order['items'] = valid_items
     
     return render_template('order_confirmation.html', order=order, cart_count=get_cart_count())
 
@@ -187,7 +201,11 @@ def get_cart_count():
     cart = session.get('cart', [])
     if not isinstance(cart, list):
         return 0
-    return sum(item.get('quantity', 0) for item in cart)
+    total = 0
+    for item in cart:
+        if isinstance(item, dict):
+            total += item.get('quantity', 0)
+    return total
 
 if __name__ == '__main__':
     os.makedirs('flask_session', exist_ok=True)
