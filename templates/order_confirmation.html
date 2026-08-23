@@ -29,23 +29,20 @@
             
             <div class="order-items-confirmation">
                 <h3>Ordered Products</h3>
-                {% if order.items %}
-                    {% for item in order.items %}
-                    <div class="order-item-confirmation">
-                        <span>{{ item.id|title if item.id else 'Product' }}</span>
-                        <span>× {{ item.quantity if item.quantity else 1 }}</span>
-                        <span>RM {{ "%.2f"|format((item.quantity if item.quantity else 1) * 12.50) }}</span>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <p>No items found</p>
-                {% endif %}
+                {% for item in order.items %}
+                <div class="order-item-confirmation">
+                    {% set product_name = item.id|title %}
+                    <span>{{ product_name }} Flavour</span>
+                    <span>× {{ item.quantity }}</span>
+                    <span>RM {{ "%.2f"|format(item.quantity * 12.50) }}</span>
+                </div>
+                {% endfor %}
             </div>
             
             <div class="order-total-confirmation">
                 <div class="total-row">
                     <span>Total Amount</span>
-                    <span class="total-amount">RM {{ "%.2f"|format(order.total if order.total else 0) }}</span>
+                    <span class="total-amount">RM {{ "%.2f"|format(order.total) }}</span>
                 </div>
             </div>
             
