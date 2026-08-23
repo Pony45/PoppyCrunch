@@ -25,11 +25,20 @@ def cart():
     for item in cart_items:
         p = get_product(item['id'])
         if p:
-            enriched.append({**item, 'name': p['name'], 'price': p['price'], 'image': p['image'], 
-                           'subtotal': round(p['price'] * item['quantity'], 2)})
+            enriched.append({
+                **item, 
+                'name': p['name'], 
+                'price': p['price'], 
+                'image': p['image'],
+                'currency': p['currency'],
+                'subtotal': round(p['price'] * item['quantity'], 2)
+            })
     subtotal = calculate_subtotal(cart_items)
-    return render_template('cart.html', cart_items=enriched, subtotal=subtotal, 
-                         delivery=calculate_delivery_fee(subtotal), total=calculate_total(cart_items),
+    return render_template('cart.html', 
+                         cart_items=enriched, 
+                         subtotal=subtotal, 
+                         delivery=calculate_delivery_fee(subtotal), 
+                         total=calculate_total(cart_items),
                          cart_count=get_cart_count())
 
 @app.route('/add-to-cart', methods=['POST'])
@@ -68,7 +77,8 @@ def update_cart():
     session.modified = True
     subtotal = calculate_subtotal(cart)
     return jsonify({'success': True, 'cart_count': get_cart_count(), 
-                   'subtotal': subtotal, 'delivery': calculate_delivery_fee(subtotal),
+                   'subtotal': subtotal, 
+                   'delivery': calculate_delivery_fee(subtotal),
                    'total': calculate_total(cart)})
 
 @app.route('/checkout', methods=['GET', 'POST'])
@@ -95,17 +105,17 @@ def checkout():
         return redirect(url_for('cart'))
     
     enriched = []
-for item in cart_items:
-    p = get_product(item['id'])
-    if p:
-        enriched.append({
-            'id': item['id'],
-            'quantity': item['quantity'],
-            'name': p['name'],
-            'price': p['price'],
-            'currency': p['currency'],
-            'subtotal': round(p['price'] * item['quantity'], 2)
-        })
+    for item in cart_items:
+        p = get_product(item['id'])
+        if p:
+            enriched.append({
+                'id': item['id'],
+                'quantity': item['quantity'],
+                'name': p['name'],
+                'price': p['price'],
+                'currency': p['currency'],
+                'subtotal': round(p['price'] * item['quantity'], 2)
+            })
     
     subtotal = calculate_subtotal(cart_items)
     delivery = calculate_delivery_fee(subtotal)
