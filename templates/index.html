@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Pop'y Crunch - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-container">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="hero-brand">POP'Y CRUNCH</span>
+                <span class="hero-tagline">Crispy • Thin • Addictive</span>
+            </h1>
+            <p class="hero-text">Crunchy mini popia made for every snacking moment.</p>
+            <a href="{{ url_for('shop') }}" class="btn-primary btn-large">SHOP NOW</a>
+        </div>
+        <div class="hero-image">
+            <img src="{{ url_for('static', filename='images/hero_bg.jpg') }}" alt="Pop'y Crunch Snacks" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22><rect fill=%22%23f5e6d3%22 width=%22400%22 height=%22400%22/><text x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2230%22 fill=%22%238b4513%22>Pop\'y Crunch</text></svg>'">
+        </div>
+    </div>
+</section>
+
+<!-- Introduction Section -->
+<section class="intro-section">
+    <div class="container">
+        <p class="intro-text">
+            Pop'y Crunch is a local snack brand offering crispy and thin mini popia in delicious Cheese and Salted Egg flavours. 
+            Our goal is to provide an affordable, convenient and satisfying snack for students, families and snack lovers.
+        </p>
+    </div>
+</section>
+
+<!-- Why Pop'y Crunch Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">Why Pop'y Crunch?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-cookie"></i>
+                </div>
+                <h3>Crispy & Thin</h3>
+                <p>Light and crunchy texture for an enjoyable snacking experience.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-tag"></i>
+                </div>
+                <h3>Affordable</h3>
+                <p>Only RM12.50 per jar.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3>Two Signature Flavours</h3>
+                <p>Choose between Cheese and Salted Egg.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <h3>Convenient Packaging</h3>
+                <p>Easy to carry, store and enjoy anytime.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Milestone Section -->
+<section class="milestone-section">
+    <div class="container">
+        <div class="milestone-content">
+            <div class="milestone-number">
+                <span class="number">RM700+</span>
+                <span class="label">SALES ACHIEVED</span>
+            </div>
+            <h3>Thank you for supporting Pop'y Crunch!</h3>
+            <p>We're grateful for every customer who has enjoyed our crispy snacks.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="featured-products">
+    <div class="container">
+        <h2 class="section-title">Featured Products</h2>
+        <div class="products-grid">
+            {% for product in products %}
+            <div class="product-card" id="{{ product.id }}">
+                <div class="product-image">
+                    <img src="{{ url_for('static', filename='images/' + product.image) }}" 
+                         alt="{{ product.name }}" 
+                         onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22><rect fill=%22%23f5e6d3%22 width=%22300%22 height=%22300%22/><text x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2220%22 fill=%22%238b4513%22>{{ product.name }}</text></svg>'">
+                    <span class="product-badge">Bestseller</span>
+                </div>
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <p class="product-description">{{ product.short_description }}</p>
+                    <p class="product-price">{{ product.currency }} {{ "%.2f"|format(product.price) }}</p>
+                    <div class="product-actions">
+                        <div class="quantity-selector">
+                            <button class="qty-btn qty-minus" data-product="{{ product.id }}">-</button>
+                            <input type="number" class="qty-input" id="qty-{{ product.id }}" value="1" min="1" max="10">
+                            <button class="qty-btn qty-plus" data-product="{{ product.id }}">+</button>
+                        </div>
+                        <button class="btn-add-to-cart" data-product="{{ product.id }}">
+                            <i class="fas fa-cart-plus"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+    <div class="container">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div class="faq-grid">
+            <div class="faq-item">
+                <h3>What flavours are available?</h3>
+                <p>Cheese and Salted Egg.</p>
+            </div>
+            <div class="faq-item">
+                <h3>How much is one jar?</h3>
+                <p>RM12.50 per jar.</p>
+            </div>
+            <div class="faq-item">
+                <h3>How can I order?</h3>
+                <p>Add your preferred products to the cart and proceed to checkout.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Do you offer delivery?</h3>
+                <p>Yes, customers can select delivery or self pickup during checkout.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
