@@ -53,7 +53,7 @@
                 <div class="order-item">
                     <span class="order-item-name">{{ item.name }}</span>
                     <span class="order-item-qty">× {{ item.quantity }}</span>
-                    <span class="order-item-price">{{ item.currency }} {{ "%.2f"|format(item.subtotal) }}</span>
+                    <span class="order-item-price">RM {{ "%.2f"|format(item.price * item.quantity) }}</span>
                 </div>
                 {% endfor %}
                 
@@ -61,15 +61,15 @@
                 
                 <div class="summary-row">
                     <span>Subtotal</span>
-                    <span>{{ "%.2f"|format(subtotal) }}</span>
+                    <span>RM {{ "%.2f"|format(subtotal) }}</span>
                 </div>
                 <div class="summary-row">
                     <span>Delivery Fee</span>
-                    <span>{{ "%.2f"|format(delivery) }}</span>
+                    <span>RM {{ "%.2f"|format(delivery) }}</span>
                 </div>
                 <div class="summary-row total">
                     <span>Total</span>
-                    <span>{{ "%.2f"|format(total) }}</span>
+                    <span>RM {{ "%.2f"|format(total) }}</span>
                 </div>
             </div>
         </div>
